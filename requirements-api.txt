@@ -1,0 +1,11 @@
+fastapi
+uvicorn
+requests
+prometheus-client
+mlflow-skinny==3.17.1
+lightgbm==4.7.0
+numpy==2.5.4
+pandas==3.0.6
+scikit-learn==1.9.1
+scipy==1.18.1
+skops==0.16.0

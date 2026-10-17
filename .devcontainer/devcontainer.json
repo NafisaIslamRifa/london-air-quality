@@ -1,0 +1,14 @@
+{
+  "name": "london-air-quality",
+  "build": { "dockerfile": "Dockerfile" },
+  "features": {
+    "ghcr.io/devcontainers/features/docker-in-docker:2": { "moby": false }
+  },
+  "postCreateCommand": "rm -rf .venv && python -m venv .venv && .venv/bin/pip install -r requirements.txt && .venv/bin/pip install -e .",
+  "customizations": {
+    "vscode": {
+      "extensions": ["ms-python.python"],
+      "settings": { "python.defaultInterpreterPath": ".venv/bin/python" }
+    }
+  }
+}

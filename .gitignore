@@ -4,4 +4,5 @@ mlruns/
 __pycache__/
 *.egg-info/
 model_baked/
-mlflow.db
+mlflow.dbdocker-compose.override.yml
+docker-compose.override.yml
