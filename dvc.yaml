@@ -1,0 +1,16 @@
+stages:
+  ingest:
+    cmd: python -m aq.ingest
+    deps:
+    - src/aq/config.py
+    - src/aq/ingest.py
+    outs:
+    - data/processed/daily_raw.parquet
+    - data/raw
+  validate:
+    cmd: python -m aq.validate
+    deps:
+    - data/processed/daily_raw.parquet
+    - src/aq/validate.py
+    outs:
+    - data/processed/daily.parquet

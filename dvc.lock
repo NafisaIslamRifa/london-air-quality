@@ -1,0 +1,39 @@
+schema: '2.0'
+stages:
+  ingest:
+    cmd: python -m aq.ingest
+    deps:
+    - path: src/aq/config.py
+      hash: md5
+      md5: 2a01fd5d1309b3a70cf3edca35914276
+      size: 511
+    - path: src/aq/ingest.py
+      hash: md5
+      md5: 4d276a2b4bdcc0833ea4c429abca6147
+      size: 4042
+    outs:
+    - path: data/processed/daily_raw.parquet
+      hash: md5
+      md5: 99e13e04f272ee1399f8e791ba6dff8b
+      size: 66701
+    - path: data/raw
+      hash: md5
+      md5: 835a0f03e76af4de4d711c3c2001d232.dir
+      size: 652040
+      nfiles: 2
+  validate:
+    cmd: python -m aq.validate
+    deps:
+    - path: data/processed/daily_raw.parquet
+      hash: md5
+      md5: 99e13e04f272ee1399f8e791ba6dff8b
+      size: 66701
+    - path: src/aq/validate.py
+      hash: md5
+      md5: 5346b5f3a25efa08548b1f6887f994b4
+      size: 2489
+    outs:
+    - path: data/processed/daily.parquet
+      hash: md5
+      md5: a5e387df4419056a2857aef968970b62
+      size: 64600

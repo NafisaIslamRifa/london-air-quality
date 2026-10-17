@@ -1,0 +1,13 @@
+pandas
+pyarrow
+requests
+numpy
+matplotlib
+scikit-learn
+lightgbm
+mlflow
+fastapi
+uvicorn
+pandera
+pytest
+dvc
