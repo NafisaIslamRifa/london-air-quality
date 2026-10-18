@@ -1,0 +1,47 @@
+name: Daily monitor
+
+on:
+  schedule:
+    - cron: "30 4 * * *"      # 04:30 UTC: MET Norway still covers most of the day ahead
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: daily-monitor
+  cancel-in-progress: false
+
+jobs:
+  monitor:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements-monitor.txt
+      - run: pip install -r requirements-monitor.txt && pip install --no-deps -e .
+
+      - name: Forecast, score, drift check, push metrics
+        env:
+          AQ_API_URL: ${{ secrets.AQ_API_URL }}
+          GRAFANA_PUSH_URL: ${{ secrets.GRAFANA_PUSH_URL }}
+          GRAFANA_USER: ${{ secrets.GRAFANA_USER }}
+          GRAFANA_API_KEY: ${{ secrets.GRAFANA_API_KEY }}
+        run: python -m aq.monitor
+
+      - name: Commit the prediction log
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add monitoring/predictions.csv
+          if git diff --cached --quiet; then
+            echo "prediction log unchanged"
+          else
+            git commit -m "monitor: update prediction log [skip ci]"
+            git pull --rebase origin main
+            git push
+          fi
