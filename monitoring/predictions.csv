@@ -1,0 +1,2 @@
+made_at,forecast_date,based_on_date,lead_days,predicted_no2_ugm3,model_version,model_source,weather_source
+2026-10-18T09:11:38,2026-10-18,2026-10-17,0,16.96,1,mlflow,fallback_recent_observed
