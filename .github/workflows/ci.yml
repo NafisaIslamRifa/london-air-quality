@@ -40,6 +40,19 @@ jobs:
       MLFLOW_TRACKING_PASSWORD: ${{ secrets.MLFLOW_TRACKING_PASSWORD }}
     steps:
       - uses: actions/checkout@v4
+
+      - name: Check DagsHub credentials (prints lengths and status only)
+        run: |
+          echo "username length: ${#MLFLOW_TRACKING_USERNAME} (expect 15)"
+          echo "token length: ${#MLFLOW_TRACKING_PASSWORD} (expect 40)"
+          code=$(curl -s -o /dev/null -w "%{http_code}" \
+            -u "$MLFLOW_TRACKING_USERNAME:$MLFLOW_TRACKING_PASSWORD" https://dagshub.com/api/v1/user)
+          echo "DagsHub auth check: $code"
+          if [ "$code" != "200" ]; then
+            echo "::error::DagsHub rejected the credentials. Re-enter the MLFLOW_TRACKING_USERNAME and MLFLOW_TRACKING_PASSWORD secrets (no spaces or line breaks)."
+            exit 1
+          fi
+
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
