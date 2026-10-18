@@ -41,6 +41,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Clean DagsHub credentials (strip stray spaces or line breaks)
+        run: |
+          user=$(printf '%s' "$MLFLOW_TRACKING_USERNAME" | tr -cd '[:alnum:]')
+          tok=$(printf '%s' "$MLFLOW_TRACKING_PASSWORD" | tr -cd '[:alnum:]')
+          echo "::add-mask::$tok"
+          echo "MLFLOW_TRACKING_USERNAME=$user" >> "$GITHUB_ENV"
+          echo "MLFLOW_TRACKING_PASSWORD=$tok" >> "$GITHUB_ENV"
+
       - name: Check DagsHub credentials (prints lengths and status only)
         run: |
           echo "username length: ${#MLFLOW_TRACKING_USERNAME} (expect 15)"
@@ -49,7 +57,7 @@ jobs:
             -u "$MLFLOW_TRACKING_USERNAME:$MLFLOW_TRACKING_PASSWORD" https://dagshub.com/api/v1/user)
           echo "DagsHub auth check: $code"
           if [ "$code" != "200" ]; then
-            echo "::error::DagsHub rejected the credentials. Re-enter the MLFLOW_TRACKING_USERNAME and MLFLOW_TRACKING_PASSWORD secrets (no spaces or line breaks)."
+            echo "::error::DagsHub rejected the credentials. The token may be wrong or regenerated: create a new one in DagsHub and update the secret."
             exit 1
           fi
 
@@ -96,4 +104,6 @@ jobs:
         if: github.ref == 'refs/heads/main'
         env:
           RENDER_DEPLOY_HOOK: ${{ secrets.RENDER_DEPLOY_HOOK }}
-        run: curl -fsS -X POST "$RENDER_DEPLOY_HOOK"
+        run: |
+          hook=$(printf '%s' "$RENDER_DEPLOY_HOOK" | tr -d '[:space:]')
+          curl -fsS -X POST "$hook"
