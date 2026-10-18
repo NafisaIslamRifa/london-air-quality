@@ -21,15 +21,10 @@ from aq.features import FEATURES, TARGET, make_dataset
 
 
 def data_version() -> str:
-    """md5 of daily.parquet from dvc.lock, so every run traces to an exact dataset."""
-    try:
-        lock = yaml.safe_load((config.ROOT / "dvc.lock").read_text())
-        for out in lock["stages"]["validate"]["outs"]:
-            if out["path"].endswith("daily.parquet"):
-                return out["md5"]
-    except (OSError, KeyError, TypeError):
-        pass
-    return "unknown"
+       """md5 of daily.parquet (the same value DVC records), so every run traces to its dataset."""
+       import hashlib
+       path = config.DATA_PROCESSED / "daily.parquet"
+       return hashlib.md5(path.read_bytes()).hexdigest() if path.exists() else "unknown"
 
 
 def time_split(df):

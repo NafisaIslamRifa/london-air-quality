@@ -40,6 +40,8 @@ def month_ranges(start, end):
 def fetch_no2() -> pd.DataFrame:
     frames = []
     for s, e in month_ranges(config.START_DATE, config.END_DATE):
+        if s == e:                         # LAQN rejects one-day ranges (HTTP 400)
+            s = s - pd.Timedelta(days=1)   # the duplicate hours are dropped below
         url = LAQN_URL.format(
             site=config.SITE, species=config.SPECIES,
             start=s.strftime("%Y-%m-%d"), end=e.strftime("%Y-%m-%d"),
@@ -47,7 +49,7 @@ def fetch_no2() -> pd.DataFrame:
         data = _get(url).get("RawAQData", {}).get("Data", [])
         if isinstance(data, dict):          # single record comes back as a dict
             data = [data]
-        print(f"LAQN {s:%Y-%m}: {len(data)} rows")
+        print(f"LAQN {e:%Y-%m}: {len(data)} rows")
         if data:
             df = pd.DataFrame(data).rename(
                 columns={"@MeasurementDateGMT": "time", "@Value": "no2"})

@@ -21,3 +21,6 @@ scikit-learn
 prometheus-client
 httpx
 pyyaml
+pandas
+numpy
+requests

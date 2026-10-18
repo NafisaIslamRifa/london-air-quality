@@ -11,7 +11,7 @@ LAT, LON = 51.5225, -0.1546
 
 # Fixed dates keep the dataset reproducible (important for DVC)
 START_DATE = "2023-10-01"
-END_DATE = "2026-09-30"
+END_DATE = os.getenv("AQ_END_DATE", "2026-09-30")
 
 MIN_HOURS_PER_DAY = 18   # fewer valid hourly readings -> day counts as missing
 
