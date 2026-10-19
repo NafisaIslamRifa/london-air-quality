@@ -95,7 +95,8 @@ docker compose up --build -d                     # API :8000, Prometheus :9090, 
 
 Create a `.env` file (git-ignored) with `MLFLOW_TRACKING_URI`, `MLFLOW_TRACKING_USERNAME` and `MLFLOW_TRACKING_PASSWORD`.
 
-![Local Grafana dashboard](docs/grafana_local.png)
+![Local Grafana dashboard](<img width="1431" height="693" alt="Screenshot 2026-10-18 at 8 32 34 AM" src="https://github.com/user-attachments/assets/2cce4570-6843-44bc-86d7-3be106a019e3" />
+)
 
 ## CI/CD and automation
 
